@@ -1,9 +1,10 @@
+'use strict'
 const Sequelize = require('sequelize')
 module.exports = function (sequelize) {
-  var user = sequelize.define('User', {
-    username: { type: Sequelize.STRING(250), allowNull: false, unique: true },
-    password: { type: Sequelize.String(16), allowNull: false },
-    last_logged_in: Sequelize.DATE,
+  let user = sequelize.define('User', {
+    email: { type: Sequelize.STRING(250), allowNull: false, unique: true },
+    password: { type: Sequelize.STRING(16), allowNull: false },
+    last_logged_in: {type: Sequelize.DATE, defaultValue: Date},
     status: { type: Sequelize.BOOLEAN, defaultValue: true }
   }, {
     timestamps: true,
