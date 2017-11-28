@@ -22,10 +22,10 @@ module.exports = function(sequelize) {
                     if(!instance) {
                         return cb(null, false)
                     }
-                    var user = _.clone(instance.dataValues)
+                    const user = _.clone(instance.dataValues)
                     if(user.password !== password) {
                         isSuccessful = false
-                        return
+                        return cb(null, false)
                     }
                     instance.last_logged_in = sequelize.fn('NOW')
                     return instance.save({ silent: true })
@@ -38,13 +38,15 @@ module.exports = function(sequelize) {
                 })
         },
         changePassword: function(email, oldPassword, newPassword, cb) {
-            var service = this
+            const service = this
             service.login(email, oldPassword, function(error, isSuccessful) {
                 if(error) {
                     return cb(error)
                 }
                 if(!isSuccessful) {
-                    return cb(new Error('Cannot change password'))
+                    let err = new Error('Cannot change password')
+                    err.code = 'Cannot change pass'
+                    return cb(err)
                 }
                 User.update({ password: newPassword }, { where: { email: email } })
                     .then(function() {
