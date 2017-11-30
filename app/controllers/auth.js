@@ -1,7 +1,5 @@
 const express = require('express'),
     router = express.Router(),
-    jwt = require('jwt-simple'),
-    // config = require('../../config/config'),
     db = require('../models'),
     userService = require('../services/user')(db.sequelize)
 
@@ -22,12 +20,10 @@ router.post('/token', function(req, res, next) {
         err.status = 400
         return next(err)
     }
-    var payload = { id: 'BloBla' }
-    var token = jwt.encode(payload, 'muoi')
-    userService.updateToken(email, password, token, function(error) {
+    userService.updateToken(email, password, function(error, result) {
         if ( error ) {
             return res.send(error)
         }
-        return res.json({ token: token })
+        return res.json({ token: result })
     })
 })

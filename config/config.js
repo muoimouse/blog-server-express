@@ -16,9 +16,13 @@ const config = {
       password: '1',
       options: {
         dialect: 'mysql',
+        timezone: "+07:00",
         host: 'localhost',
         port: '3306'
       }
+    },
+    auth: {
+      secretOrKey: 'zxczxczcx'
     }
   },
 
