@@ -14,17 +14,18 @@ module.exports = function(sequelize) {
                 })
         },
         login: function(email, password, cb) {
-            var isSuccessful = true
+            // var isSuccessful = true
             User.findOne({
                 where: { email: email }
             })
                 .then(function(instance) {
-                    if(!instance) {
+                    if ( !instance ) {
+                        // isSuccessful = false
                         return cb(null, false)
                     }
                     const user = _.clone(instance.dataValues)
-                    if(user.password !== password) {
-                        isSuccessful = false
+                    if ( user.password !== password ) {
+                        // isSuccessful = false
                         return cb(null, false)
                     }
                     instance.last_logged_in = sequelize.fn('NOW')
@@ -38,12 +39,12 @@ module.exports = function(sequelize) {
                 })
         },
         changePassword: function(email, oldPassword, newPassword, cb) {
-            const service = this
+            let service = this
             service.login(email, oldPassword, function(error, isSuccessful) {
-                if(error) {
+                if ( error ) {
                     return cb(error)
                 }
-                if(!isSuccessful) {
+                if ( !isSuccessful ) {
                     let err = new Error('Cannot change password')
                     err.code = 'Cannot change pass'
                     return cb(err)
@@ -56,7 +57,41 @@ module.exports = function(sequelize) {
                         return cb(error)
                     })
             })
-        }
+        },
+        removeUserById: function(id, cb) {
+            User.destroy({ where: { id: id } })
+                .then(function(number) {
+                    return number ? cb(null, true) : cb(null, false)
+                })
+                .catch(function(error) {
+                    return cb(error)
+                })
+        },
+        updateToken: function(email, password, token, cb) {
+            let service = this
+            service.login(email, password, function(error, isSuccessful) {
+                if ( error ) {
+                    let err = new Error()
+                    err.code = error
+                    return cb(err)
+                }
+                if ( !isSuccessful ) {
+                    let err = new Error('Cannot create token')
+                    err.status = 400
+
+                    return cb(err)
+                }
+                if ( isSuccessful ) {
+                    User.update({ token: token }, { where: { email: email } })
+                        .then(function() {
+                            return cb(null)
+                        })
+                        .catch(function(error) {
+                            return cb(error)
+                        })
+                }
+            })
+        },
     }
 }
 
