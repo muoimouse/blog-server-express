@@ -14,10 +14,10 @@ const params = {
 
 var jwtStrategy = new strategyJwt(params, function (payload, done) {
     userService.checkPayload(payload.id, function (error, result) {
-        if (error) {
+        if ( error ) {
             return done('Not access')
         }
-        if (!result) {
+        if ( !result ) {
             return done('Not access')
         }
         return done(null, { id: payload.id })

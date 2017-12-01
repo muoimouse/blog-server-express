@@ -7,13 +7,13 @@ module.exports = (sequelize, DataTypes) => {
     url: DataTypes.STRING,
     text: DataTypes.STRING
   }, {
-    classMethods: {
-      associate: (models) => {
-        // example on how to add relations
-        // Article.hasMany(models.Comments);
+      classMethods: {
+        associate: (models) => {
+          // example on how to add relations
+          // Article.hasMany(models.Comments);
+        }
       }
-    }
-  })
+    })
 
   return Article
 }
