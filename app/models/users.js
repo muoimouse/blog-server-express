@@ -1,5 +1,6 @@
-'use strict'
-const Sequelize = require('sequelize')
+'use strict';
+
+const Sequelize = require('sequelize');
 module.exports = function (sequelize) {
     let user = sequelize.define('User', {
         email: { type: Sequelize.STRING(250), allowNull: false, unique: true },
@@ -12,8 +13,8 @@ module.exports = function (sequelize) {
         paranoid: true, // chuyen ham destroy thanh update, them ngay delete
         underscored: true,
         tableName: 'users'
-    })
+    });
     return {
         User: user
-    }
-}
+    };
+}; 
