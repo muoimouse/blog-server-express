@@ -1,11 +1,14 @@
-const express = require('express'),
-    router = express.Router(),
-    db = require('../models'),
-    userService = require('../services/user')(db.sequelize);
+const express = require('express');
+const router = express.Router();
+const db = require('../models');
+const userService = require('../services/user')(db.sequelize);
+const passport = require('passport');
 
 module.exports = function (app) {
     app.use('/auth', router);
 };
+
+router.get('/facebook', passport.authenticate('facebook, '));
 
 router.post('/token', function (req, res, next) {
     var email = req.body.email;
