@@ -3,6 +3,7 @@ const config = require('./config/config');
 const db = require('./app/models');
 
 const app = express();
+// app.use(express.session({ secret: 'secret' }));
 
 module.exports = require('./config/express')(app, config);
 

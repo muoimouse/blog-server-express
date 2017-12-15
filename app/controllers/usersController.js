@@ -3,16 +3,16 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models');
 const userService = require('../services/user')(db.sequelize);
-const auth = require('../auth').isJwtAuthenticated;
+// const auth = require('../auth').isJwtAuthenticated;
 
 module.exports = function (app) {
     app.use('/user', router);
     // app.use(auth.initialize)
 };
-router.get('/', auth, function (req, res, next) {
-    console.log(req);
-    return res.json({ message: 'ok' });
-});
+// router.get('/', auth, function (req, res, next) {
+//     console.log(req);
+//     return res.json({ message: 'ok' });
+// });
 router.post('/', function (req, res, next) {
     const user = {
         email: req.body.email,

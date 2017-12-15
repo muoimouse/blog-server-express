@@ -2,13 +2,24 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models');
 const userService = require('../services/user')(db.sequelize);
-const passport = require('passport');
+// const passport = require('passport');
+const passport = require('../auth');
 
 module.exports = function (app) {
+    app.use(passport.initialize());
+    app.use(passport.session());
     app.use('/auth', router);
 };
 
-router.get('/facebook', passport.authenticate('facebook, '));
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    res.redirect('/');
+  }
+router.get('/success', ensureAuthenticated, (req, res, next) => {
+    res.render('index', {
+        title: 'HIHI'
+    });
+});
 
 router.post('/token', function (req, res, next) {
     var email = req.body.email;
@@ -23,10 +34,22 @@ router.post('/token', function (req, res, next) {
         err.status = 400;
         return next(err);
     }
-    userService.updateToken(email, password, function (error, result) {
+    userService.updateToken(email, password, null, function (error, result) {
         if (error) {
             return res.send(error);
         }
-        return res.json({ token: result });
+        if (result) {
+            return res.json({ token: result });
+        }
+        return { errorCode: 'UnknownError' };
     });
+});
+
+router.get('/facebook', passport.authenticate('facebook'), function(req, res){});
+// router.get('/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
+//     (req, res) => {
+//         res.redirect('/account');
+//     });
+router.get('/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),  (req, res, next) => {
+    res.redirect('/auth/success');
 });

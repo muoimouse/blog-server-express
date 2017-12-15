@@ -71,33 +71,44 @@ module.exports = function (sequelize) {
                     return cb(error);
                 });
         },
-        updateToken: function (email, password, cb) {
-            let service = this;
-            service.login(email, password, function (error, isSuccessful) {
-                if (error) {
-                    let err = new Error();
-                    err.code = error;
-                    return cb(err);
-                }
-                if (!isSuccessful) {
-                    let err = new Error('Cannot create token');
-                    err.status = 400;
-
-                    return cb(err);
-                }
-                if (isSuccessful) {
-                    console.log();
-                    let payload = { id: isSuccessful.dataValues.id };
-                    let token = jwt.encode(payload, auth.secretOrKey);
-                    User.update({ token: token }, { where: { email: email } })
+        // used to update Token of user
+        updateToken: function (email, password, oauthId, cb) {
+            if (oauthId) {
+                let payload = { id: oauthId };
+                let token = jwt.encode(payload, auth.database.secretOrKey);
+                User.update({ token: token }, { where: { oauthId: oauthId } })
                         .then(function () {
                             return cb(null, token);
                         })
                         .catch(function (error) {
                             return cb(error);
                         });
-                }
-            });
+            } else {
+                let service = this;
+                service.login(email, password, function (error, isSuccessful) {
+                    if (error) {
+                        let err = new Error();
+                        err.code = error;
+                        return cb(err);
+                    }
+                    if (!isSuccessful) {
+                        let err = new Error('Cannot create token');
+                        err.status = 400;
+                        return cb(err);
+                    }
+                    if (isSuccessful) {
+                        let payload = { id: isSuccessful.dataValues.id };
+                        let token = jwt.encode(payload, auth.database.secretOrKey);
+                        User.update({ token: token }, { where: { email: email } })
+                            .then(function () {
+                                return cb(null, token);
+                            })
+                            .catch(function (error) {
+                                return cb(error);
+                            });
+                    }
+                });
+            }
         },
         checkPayload: function (payloadId, cb) {
             User.findOne({ where: { id: payloadId } })
@@ -108,6 +119,18 @@ module.exports = function (sequelize) {
                     return cb(null, true);
                 })
                 .catch(function (error) {
+                    return cb(error);
+                });
+        },
+        checkOauthId: function(oauthId, cb) {
+            User.findOne({ Where: { oauthId: oauthId } })
+                .then((result) => {
+                    if (!result) {
+                        return cb(null, false);
+                    }
+                    return cb(null, true);
+                })
+                .catch((error) => {
                     return cb(error);
                 });
         }
