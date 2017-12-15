@@ -1,16 +1,16 @@
-const express = require('express')
-const router = express.Router()
-const db = require('../models')
+const express = require('express');
+const router = express.Router();
+const db = require('../models');
 
 module.exports = (app) => {
-    app.use('/', router)
-}
+    app.use('/', router);
+};
 
 router.get('/', (req, res, next) => {
     db.Article.findAll().then((articles) => {
         res.render('index', {
             title: 'Generator-Express MVC',
             articles: articles
-        })
-    })
-})
+        });
+    });
+});

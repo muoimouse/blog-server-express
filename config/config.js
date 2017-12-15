@@ -1,6 +1,6 @@
-const path = require('path')
-const rootPath = path.normalize(__dirname + '/..')
-const env = process.env.NODE_ENV || 'development'
+const path = require('path');
+const rootPath = path.normalize(__dirname + '/..');
+const env = process.env.NODE_ENV || 'development';
 
 const config = {
     development: {
@@ -43,6 +43,6 @@ const config = {
         port: process.env.PORT || 3000,
         db: 'mysql://localhost/blog-server-production'
     }
-}
+};
 
-module.exports = config[env]
+module.exports = config[env];
