@@ -42,7 +42,12 @@ passport.use(new FACEBOOK_STRATEGY({
     clientID: auth.facebook.clientID,
     clientSecret: auth.facebook.clientSecret,
     callbackURL: auth.facebook.callbackURL
-}, function(accessToken, refreshToken, profile, done) {
+}, (accessToken, refreshToken, profile, done) => {
+    return callback(accessToken, refreshToken, profile, done);
+}));
+
+// callback
+function callback(accessToken, refreshToken, profile, done) {
     userService.checkOauthId(profile.id, (error, result) => {
         if (error) {
             return done('Not access');
@@ -71,9 +76,6 @@ passport.use(new FACEBOOK_STRATEGY({
         return done(null, { oauthId: profile.id });
     });
 }
-));
 
 passport.use(jwtStrategy);
-// module.exports.initialize = passport.initialize()
-// module.exports.isJwtAuthenticated = passport.authenticate('jwt', { session: false });
 module.exports = passport;

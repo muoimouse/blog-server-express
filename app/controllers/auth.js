@@ -11,16 +11,7 @@ module.exports = function (app) {
     app.use('/auth', router);
 };
 
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) { return next(); }
-    res.redirect('/');
-  }
-router.get('/success', ensureAuthenticated, (req, res, next) => {
-    res.render('index', {
-        title: 'HIHI'
-    });
-});
-
+// router token normal
 router.post('/token', function (req, res, next) {
     var email = req.body.email;
     var password = req.body.password.toString();
@@ -45,11 +36,21 @@ router.post('/token', function (req, res, next) {
     });
 });
 
+// router token facebook
 router.get('/facebook', passport.authenticate('facebook'), function(req, res){});
-// router.get('/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
-//     (req, res) => {
-//         res.redirect('/account');
-//     });
 router.get('/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),  (req, res, next) => {
-    res.redirect('/auth/success');
+    if (!req.isAuthenticated()) {
+        return res.json({errorCode: 'Not auth'});        
+    }
+    userService.checkOauthId(req.user.oauthId, (err, result) => {
+        if (err) {
+            return res.send(err);
+        }
+        if (!result) {
+            return res.send(new Error('Not token'));
+        }
+        return res.send({ token: result.token });
+    });
 });
+
+

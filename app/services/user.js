@@ -128,6 +128,18 @@ module.exports = function (sequelize) {
                     if (!result) {
                         return cb(null, false);
                     }
+                    return cb(null, result);
+                })
+                .catch((error) => {
+                    return cb(error);
+                });
+        },
+        checkToken: (token, cb) => {
+            User.findOne({ where: { token: token } })
+                .then((result) => {
+                    if (!result) {
+                        return cb(null, false);
+                    }
                     return cb(null, true);
                 })
                 .catch((error) => {
