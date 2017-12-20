@@ -31,12 +31,16 @@ let jwtStrategy = new strategyJwt(jwtOptions, function (payload, done) {
 });
 
 passport.serializeUser(function(user, done) {
+    // console.log('!!!!! --- seri');
+    // console.log(user);
     done(null, user);
   });
   
-  passport.deserializeUser(function(user, done) {
+passport.deserializeUser(function(user, done) {
+    // console.log('!!!!! --- deser');
+    // console.log(user);
     done(null, user);
-  });
+});
 
 passport.use(new FACEBOOK_STRATEGY({
     clientID: auth.facebook.clientID,
@@ -77,5 +81,5 @@ function callback(accessToken, refreshToken, profile, done) {
     });
 }
 
-passport.use(jwtStrategy);
+// passport.use(jwtStrategy);
 module.exports = passport;

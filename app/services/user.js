@@ -16,6 +16,18 @@ module.exports = function (sequelize) {
                     return cb(error);
                 });
         },
+        findAll: (callback) => {
+            User.findAll()
+                .then((result) => {
+                    if (!result) {
+                        return callback(null, false);
+                    }
+                    return callback(null, result);
+                })
+                .catch((error) => {
+                    return callback(error);
+                });
+        },
         login: function (email, password, cb) {
             // var isSuccessful = true
             User.findOne({

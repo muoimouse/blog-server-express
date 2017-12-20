@@ -3,20 +3,34 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models');
 const userService = require('../services/user')(db.sequelize);
-// const auth = require('../auth');
+const auth = require('../auth');
 const authenticate = require('../auth/checkToken');
+
+const errorCodes = {
+    InvalidEmail: 'InvalidEmail',
+    InvalidPassword: 'InvalidPassword',
+    UnknownError: 'UnknownError'
+};
 
 module.exports = function (app) {
     app.use('/user', router);
-    // app.use(auth.initialize)
+    app.use(auth.initialize());
+    app.use(auth.session());
 };
-// router.get('/', auth, function (req, res, next) {
-//     console.log(req);
-//     return res.json({ message: 'ok' });
-// });
-router.post('/',authenticate, function (req, res, next) {
-    // return res.send({auth: auth});
-    const user = {
+
+router.get('/', authenticate, function (req, res, next) {
+    userService.findAll((error, result) => {
+        if (error) {
+            return res.json({errorCode: errorCodes.UnknownError});
+        }
+        if (!result) {
+            return res.json({userList: []});
+        }
+        return res.json({userList: result});
+    });
+});
+router.post('/', function (req, res, next) {
+    let user = {
         email: req.body.email,
         password: req.body.password
     };
