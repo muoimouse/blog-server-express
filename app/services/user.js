@@ -8,6 +8,9 @@ module.exports = function (sequelize) {
 
     return {
         addNewUser: function (user, cb) {
+            let payload = { id: user.oauthId };
+            let token = jwt.encode(payload, auth.database.secretOrKey);
+            user.token = token;
             User.create(user)
                 .then(function (instance) {
                     return cb(null, _.clone(instance.dataValues));

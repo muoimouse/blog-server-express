@@ -1,3 +1,4 @@
+'use strict';
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const config = require('../../config/config');
@@ -13,12 +14,21 @@ const GITHUB_STRATEGY = require('passport-github2').Strategy;
 const GOOGLE_STRATEGY = require('passport-google-oauth2').Strategy;
 const INSTAGRAM_STRATEGY = require('passport-instagram').Strategy;
 
-const jwtOptions = {
+passport.serializeUser(function(user, done) {
+    done(null, user);
+  });
+  
+passport.deserializeUser(function(user, done) {
+    done(null, user);
+});
+
+/**
+ * add JsonWebToken to module passport
+ */
+passport.use(new strategyJwt({
     secretOrKey: auth.database.secretOrKey,
     jwtFromRequest: extractJwt.fromAuthHeaderWithScheme('jwt')
-};
-
-let jwtStrategy = new strategyJwt(jwtOptions, function (payload, done) {
+}, (payload, done) => {
     userService.checkPayload(payload.id, function (error, result) {
         if (error) {
             return done('Not access');
@@ -28,20 +38,11 @@ let jwtStrategy = new strategyJwt(jwtOptions, function (payload, done) {
         }
         return done(null, { id: payload.id });
     });
-});
+}));
 
-passport.serializeUser(function(user, done) {
-    // console.log('!!!!! --- seri');
-    // console.log(user);
-    done(null, user);
-  });
-  
-passport.deserializeUser(function(user, done) {
-    // console.log('!!!!! --- deser');
-    // console.log(user);
-    done(null, user);
-});
-
+/**
+ * add authen with facebook to module passport
+ */
 passport.use(new FACEBOOK_STRATEGY({
     clientID: auth.facebook.clientID,
     clientSecret: auth.facebook.clientSecret,
@@ -50,36 +51,40 @@ passport.use(new FACEBOOK_STRATEGY({
     return callback(accessToken, refreshToken, profile, done);
 }));
 
-// callback
+/**
+ * add authen with twiter to module passport
+ */
+passport.use(new TWITTER_STRATEGY({
+    consumerKey: auth.twitter.consumerKey,
+    consumerSecret: auth.twitter.consumerSecret,
+    callbackURL: auth.twitter.callbackURL
+}, (accessToken, refreshToken, profile, done) => {
+    return callback(accessToken, refreshToken, profile, done);
+}));
+
+/**
+ * add authen with github to module passport
+ */
+passport.use(new GITHUB_STRATEGY({
+    clientID: auth.github.clientID,
+    clientSecret: auth.github.clientSecret,
+    callbackURL: auth.github.callbackURL
+}, (accessToken, refreshToken, profile, done) => {
+    return callback(accessToken, refreshToken, profile, done);
+}));
+
+/**
+ * @function callback
+ * @param {*} accessToken 
+ * @param {*} refreshToken 
+ * @param {*} profile 
+ * @param {*} done 
+ */
 function callback(accessToken, refreshToken, profile, done) {
-    userService.checkOauthId(profile.id, (error, result) => {
-        if (error) {
-            return done('Not access');
-        }
-        if (!result) {
-            let newUser = {
-                user_name: profile.displayName,
-                oauthId: profile.id
-            };
-            userService.addNewUser(newUser, (error, created) => {
-                if (error) {
-                    return done(error);
-                }
-                userService.updateToken(null, null, profile.id, (error, result) => {
-                    if (error) {
-                        return done(error);
-                    }
-                    if (!result) {
-                        return done(new Error('UnknownError'));
-                    }
-                    return done();
-                });
-                return done(null, { oauthId: created.oauthId });
-            });
-        }
-        return done(null, { oauthId: profile.id });
-    });
+    return done(null, profile);
 }
 
-// passport.use(jwtStrategy);
+/**
+ * export module passport
+ */
 module.exports = passport;
