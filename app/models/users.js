@@ -6,7 +6,7 @@ module.exports = function (sequelize) {
         email: { type: Sequelize.STRING(250), allowNull: true, unique: true },
         password: { type: Sequelize.STRING(16), allowNull: true },
         user_name: { type: Sequelize.STRING(250), allowNull: true },
-        last_logged_in: { type: Sequelize.DATE, defaultValue: Date },
+        last_logged_in: { type: Sequelize.DATE, defaultValue: null },
         status: { type: Sequelize.BOOLEAN, defaultValue: true },
         oauthId: { type: Sequelize.STRING(250), defaultValue: null },
         token: { type: Sequelize.STRING(250), allowNull: true }

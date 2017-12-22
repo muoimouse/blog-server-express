@@ -1,4 +1,8 @@
+/**
+ * Setting module passport
+ */
 'use strict';
+
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const config = require('../../config/config');
@@ -72,6 +76,29 @@ passport.use(new GITHUB_STRATEGY({
 }, (accessToken, refreshToken, profile, done) => {
     return callback(accessToken, refreshToken, profile, done);
 }));
+
+/**
+ * add authen with google to module passport
+ */
+passport.use(new GOOGLE_STRATEGY({
+    clientID: auth.google.clientID,
+    clientSecret: auth.google.clientSecret,
+    callbackURL: auth.google.callbackURL
+}, (accessToken, refreshToken, profile, done) => {
+    return callback(accessToken, refreshToken, profile, done);
+}));
+
+/**
+ * add authen with instagram to mudule passport
+ */
+passport.use(new INSTAGRAM_STRATEGY({
+    clientID: auth.instagram.clientID,
+    clientSecret: auth.instagram.clientSecret,
+    callbackURL: auth.instagram.callbackURL
+}, (accessToken, refreshToken, profile, done) => {
+    return callback(accessToken, refreshToken, profile, done);
+}));
+
 
 /**
  * @function callback

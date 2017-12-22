@@ -5,7 +5,6 @@ const jwt = require('jwt-simple');
 
 module.exports = function (sequelize) {
     let User = require('../models/users')(sequelize).User;
-
     return {
         addNewUser: function (user, cb) {
             let payload = { id: user.oauthId };
@@ -32,27 +31,21 @@ module.exports = function (sequelize) {
                 });
         },
         login: function (email, password, cb) {
-            // var isSuccessful = true
             User.findOne({
                 where: { email: email }
             })
                 .then(function (instance) {
                     if (!instance) {
-                        // isSuccessful = false
                         return cb(null, false);
                     }
                     const user = _.clone(instance.dataValues);
                     if (user.password !== password) {
-                        // isSuccessful = false
                         return cb(null, false);
                     }
                     instance.last_logged_in = sequelize.fn('NOW');
                     instance.save({ silent: true });
                     return cb(null, instance);
                 })
-                // .then(function () {
-                //   return cb(null, true)
-                // })
                 .catch(function (error) {
                     return cb(error);
                 });
@@ -86,7 +79,6 @@ module.exports = function (sequelize) {
                     return cb(error);
                 });
         },
-        // used to update Token of user
         updateToken: function (email, password, oauthId, cb) {
             if (oauthId) {
                 let payload = { id: oauthId };
@@ -138,12 +130,12 @@ module.exports = function (sequelize) {
                 });
         },
         checkOauthId: function(oauthId, cb) {
-            User.findOne({ Where: { oauthId: oauthId } })
+            User.findOne({ where: { oauthId: oauthId } })
                 .then((result) => {
                     if (!result) {
                         return cb(null, false);
                     }
-                    return cb(null, result);
+                    return cb(null, _.clone(result.dataValues));
                 })
                 .catch((error) => {
                     return cb(error);
@@ -160,7 +152,7 @@ module.exports = function (sequelize) {
                 .catch((error) => {
                     return cb(error);
                 });
-        }
+        },
     };
 };
  
