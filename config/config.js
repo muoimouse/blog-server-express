@@ -11,13 +11,13 @@ const config = {
         port: process.env.PORT || 1337,
         // db: 'mysql://localhost/blog-server-development'
         db_config: {
-            database: 'blog',
-            username: 'root',
-            password: '1',
+            database: 'c0muoi',
+            username: 'c0muoi',
+            password: 'rcZRsh!FJ9',
             options: {
                 dialect: 'mysql',
                 timezone: '+07:00',
-                host: 'localhost',
+                host: '192.168.1.101',
                 port: '3306'
             }
         },
