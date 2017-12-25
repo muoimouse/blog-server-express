@@ -1,17 +1,18 @@
-FROM centos:7
-RUN yum -y update
-RUN yum -y groupinstall "Development Tools"
-RUN yum -y install cronie
-
-RUN curl -SLO "http://nodejs.org/dist/v8.9.0/node-v8.9.0.tar.gz"
-RUN tar xzvf node-v* && cd node-v*
-RUN ./configure
-RUN make
-RUN make install
-
-CMD [ "node" ]
-RUN mkdir -p /usr/src/app
-COPY . /usr/src/app
+FROM node:8.9.0
+# Create app directory
 WORKDIR /usr/src/app
-RUN chmod +x startup.sh
-RUN npm install -g nodemon
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+RUN npm install
+# If you are building your code for production
+# RUN npm install --only=production
+
+# Bundle app source
+COPY . .
+
+EXPOSE 1337
+CMD [ "npm", "start" ]
