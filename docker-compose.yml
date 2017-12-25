@@ -1,0 +1,31 @@
+version: '3'
+services:
+  mysql:
+    image: mysql
+    volumes:
+      - ./blog-server-express:/var/lib/mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=blog
+      - MYSQL_ROOT_PASSWORD=1
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    links:
+      - mysql
+    ports:
+      - 8081:80
+    environment:
+      - MYSQL_USERNAME=root
+      - MYSQL_ROOT_PASSWORD=1
+      - PMA_HOST=mysql
+  web:
+    build: .
+    working_dir: /usr/src/app
+    command: /bin/bash startup.sh
+    volumes: 
+      - .:/usr/src/app
+    ports:
+      - "1337:1337"
+    depends_on:
+      - mysql
