@@ -1,18 +1,20 @@
 FROM node:8.9.0
 # Create app directory
-WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/blog-server-express
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package.json ./
+ADD package.json /usr/src/package.json
+ADD gulpfile.js /usr/src/gulpfile.js
+RUN npm i -g gulp
+#ADD startup.sh /usr/src/startup.sh
 
-RUN npm install
+WORKDIR /usr/src/blog-server-express
+
+RUN npm set progress false && npm install
+
 # If you are building your code for production
 # RUN npm install --only=production
-
+#VOLUME ["./"]
 # Bundle app source
-COPY . .
 
 EXPOSE 1337
-CMD [ "npm", "start" ]
+CMD [ "gulp" ]
