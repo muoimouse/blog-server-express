@@ -1,0 +1,33 @@
+version: '2.0'
+services:
+  mysql:
+    image: mysql
+    volumes:
+      - ./blog-server-express:/var/lib/mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=blog
+      - MYSQL_ROOT_PASSWORD=password
+    ports:
+    - "3306:3306"
+  phpmyadmin:
+     image: phpmyadmin/phpmyadmin
+     restart: always
+     links:
+       - mysql
+     ports:
+       - 8081:80
+     environment:
+       - MYSQL_USERNAME=root
+       - MYSQL_ROOT_PASSWORD=password
+       - PMA_HOST=mysql
+  web:
+    build: .
+    volumes:
+      - .:/usr/src/blog-server-express
+    ports:
+      - "1337:1337"
+    depends_on:
+      - mysql
+volumes:
+  blog-server-express:
