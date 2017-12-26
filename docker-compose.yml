@@ -3,7 +3,7 @@ services:
   mysql:
     image: mysql
     volumes:
-      - ./blog-server-express:/var/lib/mysql
+      - ./database/mysql:/var/lib/mysql
     restart: always
     environment:
       - MYSQL_DATABASE=blog
