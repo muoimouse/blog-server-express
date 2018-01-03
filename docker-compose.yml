@@ -1,7 +1,7 @@
 version: '2.0'
 services:
   mysql:
-    image: mysql
+    image: mysql:5.7
     volumes:
       - ./database/mysql:/var/lib/mysql
     restart: always
@@ -11,7 +11,7 @@ services:
     ports:
     - "3306:3306"
   phpmyadmin:
-     image: phpmyadmin/phpmyadmin
+     image: phpmyadmin/phpmyadmin:4.7
      restart: always
      links:
        - mysql
@@ -29,5 +29,17 @@ services:
       - "1337:1337"
     depends_on:
       - mysql
+#    command: gulp
+  nginx:
+    restart: always
+    image: nginx:1.13.8
+    volumes:
+      - ./config/nginx/sites-enabled:/etc/nginx/sites-enabled
+    ports:
+      - "81:80"
+    links:
+      - web:web
+    depends_on:
+      - web
 volumes:
   blog-server-express:
