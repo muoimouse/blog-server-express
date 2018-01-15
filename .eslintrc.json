@@ -1,28 +1,28 @@
 {
-    "env": {
-        "browser": true,
-        "commonjs": true,
-        "es6": true,
-        "mocha": true,
-        "node": true
-    },
     "extends": "eslint:recommended",
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "jsx": true
-        }
+    "ecmaFeatures": {
+        "modules": true
+    },
+    "env": {
+        "node": true,
+        "mocha": true,
+        "es6": true
     },
     "rules": {
         "no-console": 0,
         "no-unused-vars": 2,
         "no-undef": 1,
-        "require-yield": 0,
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": 2
+        "semi": 2,
+        "require-yield": 0
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    },
+    "eslintConfig": {
+        "globals": {
+            "require": true,
+            "Buffer": true
+        }
     }
 }

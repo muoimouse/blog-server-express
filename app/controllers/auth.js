@@ -1,3 +1,7 @@
+/*
+* handle authenticate
+*/
+'use strict';
 const express = require('express');
 const router = express.Router();
 const db = require('../models');
@@ -95,6 +99,7 @@ router.get('/instagram/callback', passport.authenticate('instagram', { failureRe
  */
 function callback(req, res) {
     let profile = req.user;
+    console.log(req);
     userService.checkOauthId(profile.id, (error, result) => {
         if (error) {
             return res.json({ errorCode: errorCodes.AuthenticateError });

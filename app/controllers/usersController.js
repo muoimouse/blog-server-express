@@ -29,6 +29,7 @@ router.get('/', authenticate, function (req, res, next) {
         return res.json({userList: result});
     });
 });
+
 router.post('/', function (req, res, next) {
     let user = {
         email: req.body.email,
@@ -51,6 +52,7 @@ router.post('/', function (req, res, next) {
         return res.json({ message: 'successful', data: createdUser });
     });
 });
+
 router.put('/change-password', function (req, res, next) {
     const email = req.body.email;
     const oldPassword = req.body.old_password;
