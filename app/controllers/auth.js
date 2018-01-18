@@ -99,13 +99,10 @@ router.get('/instagram/callback', passport.authenticate('instagram', { failureRe
  */
 function callback(req, res) {
     let profile = req.user;
-    console.log(req);
     userService.checkOauthId(profile.id, (error, result) => {
         if (error) {
             return res.json({ errorCode: errorCodes.AuthenticateError });
         }
-        console.log('------------------------------');
-        console.log(result);
         if (!result) {
             let newUser = {
                 user_name: profile.displayName || profile.username,

@@ -9,7 +9,6 @@ const config = {
             name: 'blog-server'
         },
         port: process.env.PORT || 1337,
-        // db: 'mysql://localhost/blog-server-development'
         db_config: {
             database: 'blog',
             username: 'root',

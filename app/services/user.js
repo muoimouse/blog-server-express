@@ -152,7 +152,7 @@ module.exports = function (sequelize) {
                 .catch((error) => {
                     return cb(error);
                 });
-        },
+        }
     };
 };
  
