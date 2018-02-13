@@ -34,9 +34,11 @@ services:
     ports:
       - "80:80"
     restart: always
-    volumes_from:
+#    volumes_from:
+#      - web
+#    links:
+#      - web:web
+    depends_on:
       - web
-    links:
-      - web:web
 volumes:
   blog-server-express:
