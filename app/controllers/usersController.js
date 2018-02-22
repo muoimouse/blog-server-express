@@ -14,11 +14,22 @@ const errorCodes = {
 
 module.exports = function (app) {
     app.use('/user', router);
-    app.use(auth.initialize());
-    app.use(auth.session());
+    // app.use(auth.initialize());
+    // app.use(auth.session());
 };
 
-router.get('/', authenticate, function (req, res, next) {
+// router.get('/', authenticate, function (req, res, next) {
+//     userService.findAll((error, result) => {
+//         if (error) {
+//             return res.json({errorCode: errorCodes.UnknownError});
+//         }
+//         if (!result) {
+//             return res.json({userList: []});
+//         }
+//         return res.json({userList: result});
+//     });
+// });
+router.get('/', function (req, res, next) {
     userService.findAll((error, result) => {
         if (error) {
             return res.json({errorCode: errorCodes.UnknownError});
@@ -35,6 +46,7 @@ router.post('/', function (req, res, next) {
         email: req.body.email,
         password: req.body.password
     };
+    console.log(user);
     if (!user.email || !validator.isEmail(user.email)) {
         let err = new Error('Invalid Email');
         err.status = 400;
