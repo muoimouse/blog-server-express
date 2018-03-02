@@ -7,6 +7,16 @@ module.exports = (app) => {
     app.use('/article', router);
 };
 
+/**
+ * Get all article
+ */
+router.get('/', (req, res, next) => {
+
+});
+
+/**
+ * Add a new article
+ */
 router.put('/', (req, res, next) => {
     let article = req.body;
     articleService.save(article, (err, result) => {
@@ -18,6 +28,10 @@ router.put('/', (req, res, next) => {
         });
     });
 });
+
+/**
+ * Update article
+ */
 router.post('/', (req, res, next) => {
     let article = req.body;
     articleService.update(article, (err, result) => {
@@ -29,8 +43,12 @@ router.post('/', (req, res, next) => {
         });
     });
 });
+
+/**
+ * Delete article
+ */
 router.delete('/', (req, res, next) => {
-    articleService.delete(req.id, (err, result) => {
+    articleService.delete(req.body.id, (err, result) => {
         if (err) {
             return next(err);
         }

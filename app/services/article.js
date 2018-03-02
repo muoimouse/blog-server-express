@@ -40,13 +40,12 @@ module.exports = (sequelize) => {
         delete: (id, cb) => {
             if (!id) {
                 let err = new Error(errorCodes.InvalidArticleId);
-                err.code = errorCodes.InvalidArticleId;
                 return cb(err);
             }
             Article.destroy({ where: { id: id } })
                 .then((result) => {
                     if (!result) {
-                        let err = new Error(errorCodes.InvalidArticleId)
+                        let err = new Error(errorCodes.InvalidArticleId);
                         return cb(err);
                     }
                     return cb(null, true);
